@@ -10,11 +10,13 @@
 <main>
   <header><div class="eyebrow">UNC / TRAYECTORIAS ACADÉMICAS</div><span class="tag">MUESTRA · 2020</span><h1>Una cohorte, muchos recorridos.</h1><p>Explorá el avance académico de la cohorte 2020 por unidad académica y propuesta formativa.</p><p class="muted">Fotografía de la muestra disponible · Fecha de corte no informada</p></header>
   <section class="filters" aria-label="Filtros">
+    <label>Personas<select id="population" aria-describedby="population-note"><option value="all">Todas las personas</option><option value="single">Con una sola propuesta</option><option value="multiple">Con más de una propuesta</option></select></label>
     <label>Unidad académica<select id="faculty"></select></label>
     <label>Tipo de propuesta<select id="type"></select></label>
     <label>Propuesta formativa<select id="programme"></select></label>
     <button id="reset">Restablecer</button>
   </section>
+  <p id="population-note" class="footnote">La cantidad de propuestas de cada persona se determina en toda la muestra, antes de aplicar los otros filtros. No implica cursado simultáneo.</p>
   <div id="status" role="status" class="status"></div>
   <section id="kpis" class="kpis" aria-label="Indicadores"></section>
   <section class="charts">
