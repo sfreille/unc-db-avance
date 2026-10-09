@@ -2,13 +2,13 @@
 <html lang="es">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>UNC · Cohorte 2020</title>
+  <title>Avance de carrera - Cohorte 2020</title>
   <link rel="stylesheet" href="style.css">
   <script defer src="data.js"></script><script defer src="app.js"></script>
 </head>
 <body>
 <main>
-  <header><div class="eyebrow">UNC / TRAYECTORIAS ACADÉMICAS</div><span class="tag">MUESTRA · 2020</span><h1>Una cohorte, muchos recorridos.</h1><p>Explorá el avance académico de la cohorte 2020 por unidad académica y propuesta formativa.</p><p class="muted">Fotografía de la muestra disponible · Fecha de corte no informada</p></header>
+  <header><div class="eyebrow">UNC / TRAYECTORIAS ACADÉMICAS</div><h1>Avance de carrera - Cohorte 2020</h1><p class="muted">UNC · Muestra disponible · Fecha de corte no informada</p><button id="download" class="export">Descargar resumen CSV</button></header>
   <section class="filters" aria-label="Filtros">
     <label>Personas<select id="population" aria-describedby="population-note"><option value="all">Todas las personas</option><option value="single">Con una sola propuesta</option><option value="multiple">Con más de una propuesta</option></select></label>
     <label>Unidad académica<select id="faculty"></select></label>
@@ -21,10 +21,9 @@
   <section id="kpis" class="kpis" aria-label="Indicadores"></section>
   <section class="charts">
     <article class="panel"><div class="eyebrow">DISTRIBUCIÓN</div><h2>¿Cuánto avanzaron?</h2><p class="muted">Porcentaje de registros en cada tramo de avance.</p><div id="histogram"></div><p id="denominator" class="footnote"></p></article>
-    <article class="panel"><div class="eyebrow">COMPARACIÓN</div><h2>Avance por unidad académica</h2><p class="muted">Promedio por registro · Las 10 unidades con más registros en la selección.</p><div id="comparison"></div></article>
+    <article class="panel"><div class="eyebrow">COMPARACIÓN</div><h2>Avance por unidad académica</h2><p class="muted">Todas las unidades de la selección · Color según avance medio.</p><div id="comparison" class="unit-grid"></div><div class="legend"><span>Avance medio</span><i></i><span>0 → 100%</span><span>Seleccioná una unidad para filtrar.</span></div></article>
   </section>
-  <section class="panel"><div class="table-heading"><div><div class="eyebrow">EXPLORADOR</div><h2>Propuestas formativas</h2></div><button id="download">Descargar resumen CSV</button></div><div class="table-controls"><label>Buscar propuesta<input id="search" type="search" placeholder="Nombre o código…"></label><label>Ordenar por<select id="sort"><option value="records">Más registros</option><option value="mean">Mayor avance medio</option><option value="name">Nombre de propuesta</option></select></label></div><p class="footnote">La búsqueda y el orden afectan solo esta tabla y su descarga.</p><div class="table-scroll"><table><caption class="sr-only">Resumen por propuesta de la selección</caption><thead><tr><th scope="col">Propuesta / unidad</th><th scope="col">Tipo</th><th scope="col">Registros</th><th scope="col">Personas</th><th scope="col">Avance medio</th><th scope="col">Mediana</th><th scope="col">Aprobadas · media</th></tr></thead><tbody id="table"></tbody></table></div><p id="table-count" class="footnote"></p></section>
   <details class="panel"><summary>Cómo leer estos datos</summary><div class="method"><p><strong>Personas y registros.</strong> Cada fila corresponde a una persona en una propuesta. Una persona puede aparecer en varias propuestas. El total de personas se calcula sin duplicados dentro de cada selección; no se obtiene sumando las personas de cada unidad.</p><p><strong>Avance y materias aprobadas.</strong> Los promedios y medianas de avance utilizan registros con porcentajes entre 0 y 100. El valor −1 se excluye de estos cálculos y de la distribución. La media de materias aprobadas utiliza todos los registros de la selección. Las propuestas pueden tener distinta duración y cantidad de materias.</p><p><strong>Interpretación.</strong> Un avance del 100% no confirma un egreso; un avance del 0% no confirma abandono. Esta muestra no contiene fechas, actividad reciente, duración del plan ni estado de graduación: no permite estimar retención, abandono o velocidad de avance.</p><p><strong>Clasificaciones.</strong> Se conservan las etiquetas originales de unidad académica, incluidas escuelas y unidades de posgrado. Las propuestas se distinguen por su código, aunque compartan nombre.</p><p><strong>Alcance.</strong> Los resultados describen este archivo de muestra, no necesariamente toda la cohorte UNC. El sitio contiene resúmenes agregados, sin identificadores de alumno o persona. No se aplica supresión de grupos pequeños.</p><p>Fuente: <code>cohorte_2020_avance.csv</code> · Cohorte identificada por el nombre del archivo; fecha de corte pendiente de documentación.</p></div></details>
-  <footer>UNC · Explorador de avance académico / Cohorte 2020</footer>
+  <footer>UNC · Avance de carrera / Cohorte 2020</footer>
 </main>
 </body></html>

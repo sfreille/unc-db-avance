@@ -23,16 +23,19 @@ function render() {
  $('histogram').innerHTML=s.valid ? s.bins.map((n,i)=>bar(labels[i],100*n/s.valid,`${percent(100*n/s.valid)} · ${fmt(n)}`)).join('') : '<p>No hay registros con avance válido.</p>';
  $('denominator').textContent=`Base: ${fmt(s.valid)} registros con avance válido. Los tramos se calculan sobre registros, no sobre personas únicas.`;
  const comparisons = $('programme').value ? list.map(p=>({name:p.faculty,summary:p.summary})) : data.slices.filter(x=>x.faculty && (!$('faculty').value || x.faculty===$('faculty').value) && x.type===$('type').value).map(x=>({name:x.faculty,summary:x.summary}));
- $('comparison').innerHTML=comparisons.sort((a,b)=>b.summary.records-a.summary.records).slice(0,10).map(x=>bar(x.name,x.summary.mean??0,`${percent(x.summary.mean)} <span class="muted">· n=${fmt(x.summary.records)}</span>`)).join('') || '<p>No hay registros para esta combinación.</p>';
- renderTable();
+ $('comparison').innerHTML=comparisons.filter(x=>x.summary.records>0).sort((a,b)=>b.summary.records-a.summary.records).map(x=>{
+   const mean=x.summary.mean;
+   const shade=mean==null ? '#edf1ed' : `hsl(163 32% ${95-(mean/100)*62}%)`;
+   const name=x.name.replace(/^Facultad de /i,'').replace(/^Facultad /i,'');
+   const detail=`${x.name}: avance medio ${percent(mean)} · ${fmt(x.summary.records)} registros`;
+   return `<button class="unit" data-faculty="${esc(x.name)}" style="--shade:${shade};--ink:${mean>65?'#fff':'#153536'}" aria-label="${esc(detail)}"><span class="unit-name">${esc(name)}</span><strong>${percent(mean)}</strong><span class="unit-tooltip" role="tooltip">${esc(detail)}</span></button>`;
+ }).join('') || '<p>No hay registros para esta combinación.</p>';
 }
-function tableRows() { const q=$('search').value.trim().toLocaleLowerCase('es'); return selectedProgrammes().filter(p=>`${p.name} ${p.id}`.toLocaleLowerCase('es').includes(q)).sort((a,b)=>$('sort').value==='name' ? a.name.localeCompare(b.name,'es') : (b.summary[$('sort').value] ?? -1)-(a.summary[$('sort').value] ?? -1)); }
-function renderTable() { const rows=tableRows(); $('table').innerHTML=rows.map(p=>`<tr><td><strong>${esc(p.name)}</strong><small>${esc(p.faculty)} · Código ${esc(p.id)}</small></td><td>${esc(p.type)}</td><td>${fmt(p.summary.records)}</td><td>${fmt(p.summary.people)}</td><td>${percent(p.summary.mean)}</td><td>${percent(p.summary.median)}</td><td>${fmt(p.summary.passed,1)}</td></tr>`).join('') || '<tr><td colspan="7">No hay propuestas para esta selección o búsqueda.</td></tr>'; $('table-count').textContent=`${fmt(rows.length)} propuestas. Los porcentajes excluyen avances no válidos.`; }
 for(const id of ['faculty','type']) $(id).addEventListener('change',()=>{refreshProgrammes();render();});
 $('population').addEventListener('change',()=>{data=source.segments[$('population').value];refreshProgrammes();render();});
 $('programme').addEventListener('change',render);
-$('search').addEventListener('input',renderTable); $('sort').addEventListener('change',renderTable);
-$('reset').addEventListener('click',()=>{$('population').value='all';data=source.segments.all;$('faculty').value='';$('type').value='';$('programme').value='';$('search').value='';$('sort').value='records';refreshProgrammes();render();});
-$('download').addEventListener('click',()=>{const rows=[['grupo_personas','propuesta','nombre','unidad','tipo','registros','personas','avance_valido_n','avance_invalido_n','avance_medio','avance_mediana','aprobadas_media'],...tableRows().map(p=>[populationLabels[$('population').value],p.id,p.name,p.faculty,p.type,p.summary.records,p.summary.people,p.summary.valid,p.summary.invalid,p.summary.mean,p.summary.median,p.summary.passed])];const csv='\uFEFF'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='cohorte-2020-'+$('population').value+'-resumen.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+$('comparison').addEventListener('click',event=>{const unit=event.target.closest('[data-faculty]');if(!unit)return;$('faculty').value=unit.dataset.faculty;refreshProgrammes();render();});
+$('reset').addEventListener('click',()=>{$('population').value='all';data=source.segments.all;$('faculty').value='';$('type').value='';$('programme').value='';refreshProgrammes();render();});
+$('download').addEventListener('click',()=>{const rows=[['grupo_personas','propuesta','nombre','unidad','tipo','registros','personas','avance_valido_n','avance_invalido_n','avance_medio','avance_mediana','aprobadas_media'],...selectedProgrammes().sort((a,b)=>b.summary.records-a.summary.records).map(p=>[populationLabels[$('population').value],p.id,p.name,p.faculty,p.type,p.summary.records,p.summary.people,p.summary.valid,p.summary.invalid,p.summary.mean,p.summary.median,p.summary.passed])];const csv='\uFEFF'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='cohorte-2020-'+$('population').value+'-resumen.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
 refreshProgrammes();render();
 
